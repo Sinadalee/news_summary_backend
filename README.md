@@ -31,20 +31,21 @@ Using either Go or Python, this backend:
 
 ## Directory Structure
 
+```plaintext
 news_summary_backend/
 ├── app/
-│   ├── api/                  # FastAPI routes
-│   ├── config/               # Region config file
-│   ├── core/                 # Main logic (fetcher, summarizer, top-k)
-│   └── main.py               # FastAPI entrypoint
+│   ├── api/                # FastAPI routes
+│   ├── config/             # Region config file
+│   └── main.py             # FastAPI entrypoint
+├── core/                   # Main logic (fetcher, summarizer, top-k)
 ├── run/
-│   ├── run_all.py            # Run fetcher + summarizer + top-k
+│   ├── run_all.py          # Run fetcher + summarizer + top-k
 │   └── run_topk_precompute.py
 ├── data/
-│   ├── raw/                  # Fetched RSS data
-│   ├── score_cache/          # Scored articles
-│   ├── top_k_cache/          # Top K summaries per region/day
-│   └── summaries/            # Optional: fallback summary output
+│   ├── raw/                # Fetched RSS data
+│   ├── score_cache/        # Scored articles by date
+│   ├── top_k_cache/        # Top K summaries per region/day
+│   └── summaries/          # Optional: fallback summary output```
 
 ## API Endpoints
 
