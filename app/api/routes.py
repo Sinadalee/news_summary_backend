@@ -13,9 +13,11 @@ REGION_CONFIG = "app/config/regions.json"
 with open(REGION_CONFIG, "r") as f:
     REGION_TIMEZONES = json.load(f)
 
-def validate_region(region: str):
-    if region not in REGION_TIMEZONES:
-        raise HTTPException(status_code=400, detail=f"Region '{region}' not supported.")
+def resolve_region(region: str | None) -> str:
+    """Return a valid region or fallback to 'global'."""
+    if region is None or region not in REGION_TIMEZONES:
+        return "global"
+    return region
 
 def get_local_date(region: str) -> str:
     tz = ZoneInfo(REGION_TIMEZONES[region])
@@ -28,17 +30,27 @@ def load_summary(date_str: str, region: str):
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
+@router.get("/summary/today")
 @router.get("/summary/{region}/today")
-def get_today_summary(region: str):
-    validate_region(region)
+def get_today_summary(region: str = None):
+    region = resolve_region(region)
     today = get_local_date(region)
-    return {"region": region, "date": today, "articles": load_summary(today, region)}
+    return {
+        "region": region,
+        "date": today,
+        "articles": load_summary(today, region)
+    }
 
+@router.get("/summary/{date}")
 @router.get("/summary/{region}/{date}")
-def get_summary_by_date(region: str, date: str):
-    validate_region(region)
+def get_summary_by_date(date: str, region: str = None):
+    region = resolve_region(region)
     try:
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
-    return {"region": region, "date": date, "articles": load_summary(date, region)}
+    return {
+        "region": region,
+        "date": date,
+        "articles": load_summary(date, region)
+    }
