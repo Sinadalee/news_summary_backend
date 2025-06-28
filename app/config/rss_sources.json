@@ -1,0 +1,8 @@
+{
+  "npr": "https://feeds.npr.org/1002/rss.xml",
+  "cbsnews": "https://www.cbsnews.com/latest/rss/main",
+  "pbs": "https://www.pbs.org/newshour/feeds/rss/economy",
+  "csmonitor": "https://rss.csmonitor.com/feeds/all",
+  "nytimes": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+  "newyorker": "https://www.newyorker.com/feed/everything"
+}

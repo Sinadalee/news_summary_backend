@@ -1,0 +1,7 @@
+{
+  "global": "UTC",
+  "japan": "Asia/Tokyo",
+  "us": "America/New_York",
+  "china": "Asia/Shanghai",
+  "singapore": "Asia/Singapore"
+}

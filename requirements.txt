@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+openai
+feedparser
+requests
+python-dotenv
+langchain-community
+fuzzywuzzy
