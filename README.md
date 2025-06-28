@@ -1,8 +1,3 @@
-Here’s the corrected and fully valid Markdown README.md with all formatting fixed, structured from top to bottom, and no emoji. The architecture section is now written in plain Markdown list format to prevent rendering issues.
-
-⸻
-
-
 # News Summary Backend
 
 A backend service that fetches news articles via RSS feeds, uses AI to analyze and summarize the top 5 most significant news items per day per region, and serves them through API endpoints.
@@ -16,7 +11,7 @@ A backend service that fetches news articles via RSS feeds, uses AI to analyze a
 - Persists data using plain JSON files (no database needed)
 - FastAPI backend serving summaries via HTTP API
 
-## Prompt Requirements
+## Requirements
 
 Using either Go or Python, this backend:
 
