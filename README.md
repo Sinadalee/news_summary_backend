@@ -45,7 +45,8 @@ news_summary_backend/
 │   ├── raw/                # Fetched RSS data
 │   ├── score_cache/        # Scored articles by date
 │   ├── top_k_cache/        # Top K summaries per region/day
-│   └── summaries/          # Optional: fallback summary output```
+│   └── summaries/          # Optional: fallback summary output
+```
 
 ## API Endpoints
 
