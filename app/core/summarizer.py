@@ -35,7 +35,7 @@ class Summarizer:
         for path in [self.score_dir, self.cache_dir, self.summary_dir, self.log_dir]:
             path.mkdir(parents=True, exist_ok=True)
 
-        self.regions = json.load(open("app/config/regions.json"))
+        self.regions = json.load(open("app/config/regions.json")).keys()
 
         self.llm_prompt = PromptTemplate.from_template("""
 Summarize the following news article in 2-3 sentences and rate its importance (1-10) for each of the following regions:

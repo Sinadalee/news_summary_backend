@@ -48,3 +48,6 @@ Disadvantages:
 
 Why This Was Chosen:
 This design prioritizes robustness and maintainability. In a real-world production system (or even a well-maintained prototype), deterministic fetch history and easy reprocessing are crucial. The improved design solves these real pains while keeping logic simple and extendable.
+
+
+uvicorn app.main:app --reload --port 8001
