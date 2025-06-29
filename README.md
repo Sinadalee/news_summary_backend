@@ -252,6 +252,7 @@ Optional:
 ## Sample Screenshot of Output
 
 ![Sample Summary Output](image.png)
+Scores in screenshots are 0 because OpenAI API is disabled to avoid further billing. $2 was spent debugging, which is the maximum budget for this prototype.
 
 ---
 
