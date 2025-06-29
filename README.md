@@ -1,106 +1,82 @@
-# News Summary Backend
+News Summary Backend
 
-A backend service that fetches news articles via RSS feeds, uses AI to analyze and summarize the top 5 most significant news items per day per region, and serves them through API endpoints.
+This project is a lightweight backend for collecting, summarizing, and serving top news stories regionally and globally.
 
-## Features
+Features
+	•	Aggregates news articles from multiple RSS feeds.
+	•	Uses GPT (via OpenAI API) to summarize and score articles by importance and frequency.
+	•	Stores data using plain JSON files, no database required.
+	•	Supports real-time summarization with socket-based communication.
+	•	Provides API endpoints to access top summaries by region and date.
 
-- Aggregates news from multiple media sources via RSS feeds
-- Scores article importance by region using OpenAI API
-- Summarizes top 5 news per day for each region
-- Supports multiple timezones and regions
-- Persists data using plain JSON files (no database needed)
-- FastAPI backend serving summaries via HTTP API
-
-## Requirements
+Requirements
 
 Using either Go or Python, this backend:
+	•	Aggregates news articles from RSS feeds
+	•	Uses AI (e.g., OpenAI API) to identify and summarize the top 5 news items of the day
+	•	Stores data using plain text files (JSON)
+	•	Offers endpoints to:
+	•	Retrieve today’s top 5 summaries
+	•	Retrieve summaries from previous days
 
-- Aggregates news articles from RSS feeds
-- Uses AI (e.g., OpenAI API) to identify and summarize the top 5 news items of the day
-- Stores data using plain text files (JSON)
-- Offers endpoints to:
-  - Retrieve today’s top 5 summaries
-  - Retrieve summaries from previous days
+Project Structure
 
-## Architecture Overview
-
-1. Fetcher collects news from RSS feeds and stores them in `data/raw/{YYYY-MM-DD}/{source}/fetch_{timestamp}.json`
-2. Summarizer scores and summarizes articles using OpenAI API, outputting to `data/score_cache/{YYYY-MM-DD}/score_{timestamp}.json`
-3. Top-K Precomputer selects the top articles per region and day, storing them in `data/top_k_cache/{region}/{date}.json`
-4. FastAPI serves these summaries via `/summary/{region}/{date}` and related endpoints
-
-## Directory Structure
-
-```plaintext
-news_summary_backend/
+.
 ├── app/
 │   ├── api/                # FastAPI routes
-│   ├── config/             # Region config file
-│   └── main.py             # FastAPI entrypoint
-├── core/                   # Main logic (fetcher, summarizer, top-k)
-├── run/
-│   ├── run_all.py          # Run fetcher + summarizer + top-k
-│   └── run_topk_precompute.py
-├── data/
-│   ├── raw/                # Fetched RSS data
-│   ├── score_cache/        # Scored articles by date
-│   ├── top_k_cache/        # Top K summaries per region/day
-│   └── summaries/          # Optional: fallback summary output
-```
+│   ├── core/               # Summarizer and sender logic
+│   ├── config/             # Region and port configuration
+├── data/                   # Raw articles, summaries, logs, caches
+├── .venv/                  # Virtual environment
+├── main.py                 # FastAPI entry point
+├── sender_us.py            # Example sender script (runs with cron)
+├── receiver.py             # Socket listener for processing fetched files
 
-## API Endpoints
+Setup
 
-| Endpoint                      | Description                                               |
-|------------------------------|-----------------------------------------------------------|
-| `/summary/today`             | Returns today's top 5 global summaries                    |
-| `/summary/{region}/today`    | Returns today’s top 5 summaries for a specific region     |
-| `/summary/{date}`            | Returns global summary for a specific date (YYYY-MM-DD)   |
-| `/summary/{region}/{date}`   | Returns region-specific summary for a given date          |
+1. Install dependencies
 
-- If no region is specified, summaries are returned for the `global` region by default.
-- Dates are interpreted in each region’s timezone, starting from midnight.
-
-## Configuration
-
-Region timezones are configured via `app/config/regions.json`. Example:
-
-```json
-{
-  "global": "UTC",
-  "us": "America/New_York",
-  "japan": "Asia/Tokyo",
-  "china": "Asia/Shanghai",
-  "singapore": "Asia/Singapore"
-}
-
-How to Run
-
-Install Dependencies
-
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
-Run the Pipeline
+2. Environment
 
-python run/run_all.py
+Create a .env file with your OpenAI key:
 
-This runs:
-	•	The RSS fetcher
-	•	The summarizer (OpenAI-based)
-	•	The Top-K precomputer
+OPENAI_API_KEY=your-api-key
 
-Run the API Server
+3. Start the API server
 
 uvicorn app.main:app --reload
 
-Test the API
+4. Start the receiver
 
-Example requests:
+python app/core/receiver.py
 
-curl http://localhost:8000/summary/today
-curl http://localhost:8000/summary/japan/2025-06-27
+By default, each region receiver listens on its own port (see app/config/ports.json).
 
-License
+5. Trigger the sender (example for US)
 
-This is a proof-of-concept project. Use and modify freely.
+You can schedule it via cron:
 
-Let me know if you’d like it saved directly into your project as `README.md`.
+* * * * * /path/to/project/.venv/bin/python /path/to/project/sender_us.py >> /tmp/sender_us.log 2>&1
+
+Or run manually for testing:
+
+python sender_us.py
+
+API Endpoints
+	•	GET /summary/today?region=us
+Returns today’s top 5 summaries for the specified region (defaults to us).
+	•	GET /summary/{date}?region=jp
+Returns top 5 summaries for a given date and region (date format: YYYY-MM-DD).
+
+Configuration
+	•	app/config/regions.json: Maps region codes to timezones.
+	•	app/config/ports.json: Maps region codes to receiver socket ports.
+
+Notes
+	•	Each fetched_*.json file is processed once and then moved to a backup directory.
+	•	Summary results are cached by UUID and deduplicated using article title + link.
+	•	Top 5 summaries are precomputed and stored under data/top_k_cache/{region}/{YYYY-MM-DD}.json.
