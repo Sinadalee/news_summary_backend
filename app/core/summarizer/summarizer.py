@@ -17,7 +17,7 @@ def generate_article_id(title: str, link: str) -> str:
 
 
 class Summarizer:
-    def __init__(self, region, date_str=None, base_dir="data", top_k=5, frequency_minutes=60, use_llm=False):
+    def __init__(self, region, date_str=None, base_dir="data", top_k=5, frequency_minutes=60, use_llm=True):
         load_dotenv()
         self.region = region
         self.top_k = top_k
