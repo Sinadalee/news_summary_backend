@@ -13,6 +13,7 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; NewsBot/1.0; +http://example.com/bot)"
 }
 
+PORT_CONFIG_PATH = Path("app/config/ports.json")
 RSS_SOURCE_FILE = Path("app/config/rss_sources.json")
 REGION_SOURCE_FILE = Path("app/config/region_sources.json")
 STATUS_DB_FILE = Path("data/cache/article_status.json")
@@ -43,8 +44,17 @@ def save_article_status(status_data: Dict[str, Dict]):
     with open(STATUS_DB_FILE, "w") as f:
         json.dump(status_data, f, indent=2)
 
-def notify_via_socket(message: Dict, host="localhost", port=9001):
+def notify_via_socket(message: Dict, host="localhost"):
     try:
+        with open(PORT_CONFIG_PATH, "r") as f:
+            port_config = json.load(f)
+
+        region = message.get("region")
+        if not region or region not in port_config:
+            raise ValueError(f"Region '{region}' not found in port config.")
+
+        port = port_config[region]
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((host, port))
             s.sendall(json.dumps(message).encode())

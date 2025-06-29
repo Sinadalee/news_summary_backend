@@ -9,6 +9,5 @@
   "asahi": "https://www.asahi.com/rss/asahi/newsheadlines.rdf",
   "xinhuanet": "http://news.cn/rss/politics.xml",
   "chinadaily": "http://www.chinadaily.com.cn/rss/china_rss.xml",
-  "straitstimes": "https://www.straitstimes.com/news/singapore/rss.xml",
-  "todayonline": "https://www.todayonline.com/feed"
+  "straitstimes": "https://www.straitstimes.com/news/singapore/rss.xml"
 }
