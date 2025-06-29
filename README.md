@@ -1,6 +1,6 @@
 # News Summary Backend
 
-This backend aggregates, summarizes, and serves news articles from various sources. It fetches RSS feeds, summarizes them using AI (OpenAI), and offers an API to retrieve top news per region.
+This backend aggregates, summarizes, and serves news articles from various sources. It fetches RSS feeds, scores and summarizes them using AI (OpenAI), and provides an API to retrieve the top news per region.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Using either Go or Python, this backend:
 news_summary_backend/
 ├── app/
 │   ├── api/                # FastAPI routes for summary access
-│   ├── config/             # Region and port config files
+│   ├── config/             # Region timezone, rss sources, and port config files
 │   │   └── regions.json
 │   └── core/
 │       ├── fetcher/        # Fetches RSS articles and sends notification
@@ -134,6 +134,8 @@ The backend performs the following tasks:
 # Rational and Design Choices
 
 This document outlines key decisions and design trade-offs made while developing the news summarization backend.
+
+The RSS sources were chosen as a proof of concept using news outlets I’m already familiar with. These include well-known organizations in the U.S. 
 
 ## LLM Impact Design
 
