@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -14,23 +14,23 @@ class TopKPrecomputer:
         with open(region_config, "r") as f:
             self.regions = json.load(f)
 
-    def load_scores(self) -> list:
+    def load_scores(self, region) -> list:
         all_scores = []
-        for date_dir in self.score_dir.iterdir():
+        region_dir = self.score_dir / region
+        if not region_dir.exists():
+            return []
+
+        for date_dir in region_dir.iterdir():
             if not date_dir.is_dir():
                 continue
             for file in date_dir.glob("*.json"):
-                with open(file, "r") as f:
-                    try:
+                try:
+                    with open(file, "r") as f:
                         data = json.load(f)
                         if isinstance(data, dict) and "published" in data:
                             all_scores.append(data)
-                        elif isinstance(data, dict):
-                            all_scores.extend(v for v in data.values() if isinstance(v, dict))
-                        elif isinstance(data, list):
-                            all_scores.extend(d for d in data if isinstance(d, dict))
-                    except Exception as e:
-                        print(f"Failed to load {file}: {e}")
+                except Exception as e:
+                    print(f"[WARN] Failed to load {file}: {e}")
         return all_scores
 
     def already_computed_dates(self, region):
@@ -42,7 +42,6 @@ class TopKPrecomputer:
     def precompute_top_k(self, regions=None, top_k=None, rerun_days=2):
         regions = regions or self.regions.keys()
         top_k = top_k or self.top_k
-        all_scores = self.load_scores()
         today = datetime.now(timezone.utc).date()
 
         for region in regions:
@@ -51,6 +50,7 @@ class TopKPrecomputer:
             computed_dates = self.already_computed_dates(region)
             articles_by_date = {}
 
+            all_scores = self.load_scores(region)
             for article in all_scores:
                 try:
                     pub = article.get("published", "")

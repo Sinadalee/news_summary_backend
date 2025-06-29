@@ -1,0 +1,6 @@
+{
+  "us": ["npr", "cbsnews", "pbs", "csmonitor", "nytimes", "newyorker"],
+  "jp": ["nhk", "asahi"],
+  "cn": ["xinhuanet", "chinadaily"],
+  "sg": ["straitstimes", "todayonline"]
+}
