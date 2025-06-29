@@ -135,6 +135,13 @@ The backend performs the following tasks:
 
 This document outlines key decisions and design trade-offs made while developing the news summarization backend.
 
+## LLM Impact Design
+
+Originally, the plan was to use view counts to determine importance, but RSS feeds do not provide view statistics. To address this, we designed a new scoring system based on:
+
+* **Frequency**: how often the same article appears across multiple sources.
+* **Impact**: score calculated by the LLM with regional context 
+
 ## Timezone-Aware Summarization
 
 Each region is associated with a specific timezone. Articles are grouped by their localized publish date. This ensures that users in different regions receive timely summaries according to their own day cycle.
